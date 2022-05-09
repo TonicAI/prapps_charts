@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tonic-integration-test-api
+  name: tonic-integration-test-api
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tonic-integration-test-api
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: tonic-integration-test-api
+    spec:
+      containers:
+      - env:
+        - name: TONIC_DB_DATABASE
+          value: {{ .Values.tonicdb.dbName }}
+        - name: TONIC_DB_USERNAME
+          value: {{ .Values.tonicdb.user }}
+        - name: TONIC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tonic-db-password
+              key: password
+        - name: TONIC_DB_PORT
+          value: {{quote .Values.tonicdb.port }}
+        - name: TONIC_DB_SSLMODE
+          value: {{ .Values.tonicdb.sslMode }}
+        - name: TONIC_DB_HOST
+          value: {{ .Values.tonicdb.host }}
+        image: quay.io/tonicai/tonic_integration_test_api_staging:{{ .Values.tonicVersion }}
+        imagePullPolicy: Always
+        name: tonic-integration-test-api
+        ports:
+        - containerPort: 443
+        resources:
+          limits:
+            memory: "1Gi"
+          requests:
+            memory: "512Mi"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - ps -ef | grep Allos.Integration.Test.Api.dll | grep -v grep
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - ps -ef | grep Allos.Integration.Test.Api.dll | grep -v grep
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      restartPolicy: Always
+      serviceAccountName: {{ template "tonic.serviceAccountName" . }}
+      imagePullSecrets:
+      - name: tonicai-build-writer-pull-secret
+      volumes: null
+status: {}
