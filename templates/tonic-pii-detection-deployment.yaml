@@ -27,7 +27,7 @@ spec:
         {{ else }}
         image: quay.io/tonicai/tonic_pii_detection:{{ .Values.tonicVersion }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: tonic-pii-detection
         ports:
         - containerPort: 7687
