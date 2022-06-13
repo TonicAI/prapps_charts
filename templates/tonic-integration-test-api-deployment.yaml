@@ -34,7 +34,7 @@ spec:
         - name: TONIC_DB_HOST
           value: {{ .Values.tonicdb.host }}
         image: quay.io/tonicai/tonic_integration_test_api_staging:{{ .Values.tonicVersion }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: tonic-integration-test-api
         ports:
         - containerPort: 443

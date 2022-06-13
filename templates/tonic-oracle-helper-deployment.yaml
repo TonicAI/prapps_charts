@@ -33,7 +33,7 @@ spec:
         {{ else }}
         image: quay.io/tonicai/tonic_oracle_helper_{{ .Values.tonicai.oracle_helper.version }}:{{ .Values.tonicVersion }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: tonic-oracle-helper
         ports:
         - containerPort: 5000
