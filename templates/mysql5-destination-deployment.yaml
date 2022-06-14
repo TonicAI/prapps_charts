@@ -29,6 +29,7 @@ spec:
         image: mysql:5.7
         imagePullPolicy: IfNotPresent
         name: mysql5-destination
+        args: ["--default-authentication-plugin=mysql_native_password", "--local-infile", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--secure-file-priv=/var/lib/mysql-files/", "--sql_mode=ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"]
         ports:
         - containerPort: 3306
         resources:
