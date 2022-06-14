@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql5-destination
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: mysql5-destination
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql5-destination
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: mysql5-destination
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_USER
+          value: user
+        - name: MYSQL_PASSWORD
+          value: password
+        - name: MYSQL_ROOT_PASSWORD
+          value: example
+        - name: LANG
+          value: C.UTF-8
+        image: mysql:5.7
+        imagePullPolicy: IfNotPresent
+        name: mysql5-destination
+        ports:
+        - containerPort: 3306
+        resources:
+          limits:
+            memory: "4Gi"
+          requests:
+            memory: "512Mi"
+            ephemeral-storage: "10Gi"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - find /proc -mindepth 2 -maxdepth 2 -name exe -exec ls -lh {} \; 2>/dev/null | grep mysql
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - find /proc -mindepth 2 -maxdepth 2 -name exe -exec ls -lh {} \; 2>/dev/null | grep mysql
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      restartPolicy: Always
+      serviceAccountName: ""
