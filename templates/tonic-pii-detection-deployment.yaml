@@ -35,7 +35,7 @@ spec:
           limits:
             memory: "512Mi"
           requests:
-            memory: "512Mi"
+            memory: "128Mi"
             ephemeral-storage: "1Gi"
         livenessProbe:
           httpGet:
