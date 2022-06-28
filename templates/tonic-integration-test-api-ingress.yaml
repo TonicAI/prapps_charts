@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "tonic-integration-test-api"
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: {{ .Values.ingress.class }}
+  rules:
+    - host: "{{.Values.prappDetails.name}}-tests.dev.tonic.ai"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: "tonic-integration-test-api"
+                port:
+                  name: "https"
