@@ -36,8 +36,8 @@ spec:
           limits:
             memory: "4Gi"
           requests:
-            memory: "512Mi"
-            ephemeral-storage: "10Gi"
+            memory: "256Mi"
+            ephemeral-storage: "512Mi"
         livenessProbe:
           exec:
             command:
