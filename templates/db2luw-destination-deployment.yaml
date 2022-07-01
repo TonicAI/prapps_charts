@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db2luw-destination
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: db2luw-destination
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db2luw-destination
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: db2luw-destination
+    spec:
+      containers:
+      - env:
+        - name: STORAGE_DIR
+          value: "/database2"
+        - name: LICENSE
+          value: accept
+        - name: DB2INST1_PASSWORD
+          value: "Password1!"
+        - name: PERSISTENT_HOME
+          value: "false"
+        - name: DBNAME
+          value: TARGET
+        - name: DB2INSTANCE
+          value: db2inst1
+        - name: DB2CODEPAGE
+          value: "1252"
+        image: ibmcom/db2:11.5.5.0
+        imagePullPolicy: IfNotPresent
+        name: db2luw-destination
+        ports:
+        - containerPort: 50000
+        resources:
+          limits:
+            memory: "4Gi"
+          requests:
+            memory: "256Mi"
+            ephemeral-storage: "512Mi"
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - find /proc -mindepth 2 -maxdepth 2 -name exe -exec ls -lh {} \; 2>/dev/null | grep db2
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - find /proc -mindepth 2 -maxdepth 2 -name exe -exec ls -lh {} \; 2>/dev/null | grep db2
+          initialDelaySeconds: 10
+          periodSeconds: 10
+      restartPolicy: Always
+      serviceAccountName: ""
