@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: mysql8-destination
   namespace: {{ .Release.Namespace }}
+  annotations:
+    security.alpha.kubernetes.io/sysctls: fs.aio-max-nr=1048576
   labels:
     app: mysql8-destination
 spec:
